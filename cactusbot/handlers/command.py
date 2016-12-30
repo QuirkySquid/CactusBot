@@ -78,6 +78,7 @@ class CommandHandler(Handler):
                 return MessagePacket("Command not found.", target=packet.user)
 
     async def custom_response(self, _packet, command, *args, **data):
+        """Create a response from a custom command."""
 
         response = await self.api.get_command(command)
         if response.status == 200:
@@ -164,11 +165,14 @@ class CommandHandler(Handler):
     def _modify(self, argument, *modifiers):
         """Apply modifiers to an argument."""
 
-        for modifier in modifiers:
-            if modifier in self.MODIFIERS:
-                argument = self.MODIFIERS[modifier](argument)
+        if len(argument) > 0:
+            for modifier in modifiers:
+                if modifier in self.MODIFIERS:
+                    argument = self.MODIFIERS[modifier](argument)
 
         return argument
 
     async def on_repeat(self, packet):
+        """Repeat event."""
+
         return packet
