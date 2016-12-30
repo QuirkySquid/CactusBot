@@ -53,12 +53,17 @@ class BeamHandler:
             user["id"], partial(self.api.get_chat, channel["id"]))
         asyncio.ensure_future(self.chat.read(self.handle_chat))
 
-        self.constellation = BeamConstellation(channel["id"], user["id"])
-        await self.constellation.connect()
         asyncio.ensure_future(
-            self.constellation.read(self.handle_constellation))
+            self.run_constellation(channel["id"], user["id"])
+        )
 
         await self.handle("start", None)
+
+    async def run_constellation(self, channel_id, user_id):
+
+        async with BeamConstellation(channel_id, user_id) as constellation:
+            await constellation.connect()
+            await constellation.read(self.handle_constellation)
 
     async def handle_chat(self, packet):
         """Handle chat packets."""

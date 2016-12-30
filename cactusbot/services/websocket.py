@@ -1,13 +1,11 @@
 """Interact with WebSockets safely."""
 
+import asyncio
+import itertools
 import logging
 
-import asyncio
-
-import itertools
-
 from aiohttp import ClientSession
-from aiohttp.errors import DisconnectedError, HttpProcessingError, ClientError
+from aiohttp.errors import ClientError, DisconnectedError, HttpProcessingError
 
 
 class WebSocket(ClientSession):
@@ -64,8 +62,8 @@ class WebSocket(ClientSession):
         assert self.websocket is not None, "Must connect to read."
         assert callable(handle), "Handler must be callable."
 
-        while True:
-            packet = await self.receive()
+        async for packet in self.websocket:
+            packet = packet.data
             if isinstance(packet, str):
                 packet = await self.parse(packet)
                 if packet is not None:

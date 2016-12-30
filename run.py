@@ -2,9 +2,9 @@
 
 """Run CactusBot."""
 
+import asyncio
 import logging
 from argparse import ArgumentParser
-from asyncio import get_event_loop
 
 from cactusbot import Cactus
 from config import API_PASSWORD, API_TOKEN, PASSWORD, SERVICE, USERNAME, api
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         style='{'
     )
 
-    loop = get_event_loop()
+    loop = asyncio.get_event_loop()
 
     # TODO: Convert this to be able to have multiple services
     cactus = Cactus(SERVICE)
