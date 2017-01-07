@@ -21,10 +21,10 @@ class BeamChat(WebSocket):
 
         self._packet_counter = itertools.count()
 
+        self.parse = self.parse_json
+
     async def send(self, *args, max_length=360, **kwargs):
         """Send a packet."""
-
-        # TODO: lock before auth
 
         packet = {
             "type": "method",
@@ -51,21 +51,6 @@ class BeamChat(WebSocket):
             await self.send(self.channel, user_id, authkey, method="auth")
         else:
             await self.send(self.channel, method="auth")
-
-    async def parse(self, packet):
-        """Parse a chat packet."""
-
-        try:
-            packet = json.loads(packet)
-        except (TypeError, ValueError):
-            self.logger.exception("Invalid JSON: %s.", packet)
-            return None
-        else:
-            if packet.get("error") is not None:
-                self.logger.error(packet)
-            else:
-                self.logger.debug(packet)
-            return packet
 
     @property
     def _packet_id(self):

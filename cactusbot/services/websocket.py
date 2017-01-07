@@ -1,13 +1,12 @@
 """Interact with WebSockets safely."""
 
+import asyncio
+import itertools
+import json
 import logging
 
-import asyncio
-
-import itertools
-
 from aiohttp import ClientSession
-from aiohttp.errors import DisconnectedError, HttpProcessingError, ClientError
+from aiohttp.errors import ClientError, DisconnectedError, HttpProcessingError
 
 
 class WebSocket(ClientSession):
@@ -81,6 +80,21 @@ class WebSocket(ClientSession):
     async def parse(self, packet):
         """Parse a packet from the WebSocket."""
         return packet
+
+    async def parse_json(self, packet):
+        """Parse a JSON packet from the WebSocket."""
+
+        try:
+            packet = json.loads(packet)
+        except (TypeError, ValueError):
+            self.logger.exception("Invalid JSON: %s.", packet)
+            return None
+        else:
+            if packet.get("error") is not None:
+                self.logger.error(packet)
+            else:
+                self.logger.debug(packet)
+            return packet
 
     @property
     def _endpoint(self):

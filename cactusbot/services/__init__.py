@@ -1,3 +1,4 @@
+"""Service clients."""
 
 from .api import API
 from .websocket import WebSocket
