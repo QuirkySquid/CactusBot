@@ -9,6 +9,8 @@ BASE_URL = "https://beam.pro/api/v1/channels/{username}"
 
 
 async def get_user_id(username):
+    """Get Beam user ID from username."""
+
     async with aiohttp.get(BASE_URL.format(username=username)) as response:
         if response.status == 404:
             return 0

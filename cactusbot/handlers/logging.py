@@ -26,10 +26,6 @@ class LoggingHandler(Handler):
         """Handle subscription events."""
         self.logger.info("%s subscribed", packet.user)
 
-    async def on_resubscribe(self, packet):
-        """Handle resubscription events."""
-        self.logger.info("%s resubscribed", packet.user)
-
     async def on_host(self, packet):
         """Handle host events."""
         self.logger.info("%s hosted", packet.user)

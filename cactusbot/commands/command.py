@@ -224,11 +224,11 @@ class Command:
             function.COMMAND_META = meta
 
             if inspect.isclass(function):
-                COMMAND = getattr(function, "COMMAND", None)
+                command = getattr(function, "COMMAND", None)
                 function = function(Command.api)
                 function.__name__ = function.__class__.__name__
-                if COMMAND is not None:
-                    function.COMMAND = COMMAND
+                if command is not None:
+                    function.COMMAND = command
 
             if name is not None:
                 assert ' ' not in name, "Command name may not contain spaces"

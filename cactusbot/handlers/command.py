@@ -79,6 +79,7 @@ class CommandHandler(Handler):
                 return MessagePacket("Command not found.", target=packet.user)
 
     async def custom_response(self, _packet, command, *args, **data):
+        """Generate a response for a custom command."""
 
         args = (command, *args)
 
@@ -176,4 +177,5 @@ class CommandHandler(Handler):
         return argument
 
     async def on_repeat(self, packet):
+        """Return repeat packets as they are received."""
         return packet

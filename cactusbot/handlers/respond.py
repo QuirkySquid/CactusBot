@@ -12,7 +12,18 @@ class ResponseHandler(Handler):
         self.username = username
 
     async def on_message(self, packet):
-        """Handler message events."""
+        """Stop iteration if the bot is responding to itself."""
+        return self._check_packet(packet, self.username)
 
-        if packet.user.lower() == self.username.lower():
+    async def on_join(self, packet):
+        """Stop iteration if the bot is the user that joined."""
+        return self._check_packet(packet, self.username)
+
+    async def on_leave(self, packet):
+        """Stop iteration if the bot is the user that left."""
+        return self._check_packet(packet, self.username)
+
+    @staticmethod
+    def _check_packet(packet, username):
+        if packet.user.lower() == username.lower():
             return StopIteration
