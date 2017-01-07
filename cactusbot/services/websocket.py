@@ -90,10 +90,7 @@ class WebSocket(ClientSession):
             self.logger.exception("Invalid JSON: %s.", packet)
             return None
         else:
-            if packet.get("error") is not None:
-                self.logger.error(packet)
-            else:
-                self.logger.debug(packet)
+            self.logger.debug(packet)
             return packet
 
     @property

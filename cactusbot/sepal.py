@@ -19,6 +19,8 @@ class Sepal(WebSocket):
         self.service = service
         self.parser = SepalParser()
 
+        self.parse = self.parse_json
+
     async def send(self, packet_type, **kwargs):
         """Send a packet to Sepal."""
 
@@ -34,18 +36,6 @@ class Sepal(WebSocket):
         """Send a subscribe packet."""
 
         await self.send("subscribe")
-
-    async def parse(self, packet):
-        """Parse a Sepal packet."""
-
-        try:
-            packet = json.loads(packet)
-        except (TypeError, ValueError):
-            self.logger.exception("Invalid JSON: %s.", packet)
-            return None
-        else:
-            self.logger.debug(packet)
-            return packet
 
     async def handle(self, packet):
         """Convert a JSON packet to a CactusBot packet."""
