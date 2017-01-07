@@ -1,7 +1,5 @@
 """Base packet."""
 
-import json
-
 
 class Packet:
     """Base packet.
@@ -21,7 +19,7 @@ class Packet:
         self.kwargs = kwargs
 
     def __repr__(self):
-        return '<{}: {}>'.format(self.type, json.dumps(self.json))
+        return '<{}: {}>'.format(self.type, self.json)
 
     @property
     def json(self):
@@ -39,3 +37,28 @@ class Packet:
         {'key': 'key', 'value': 'value'}
         """
         return self.kwargs
+
+    @classmethod
+    def from_json(cls, json):
+        """Convert :obj:`Packet` JSON into an object.
+
+        Parameters
+        ----------
+        json : :obj:`dict`
+            The JSON dictionary to convert.
+
+        Returns
+        -------
+        :obj:`Packet`
+
+        Examples
+        --------
+        >>> import pprint
+        >>> pprint.pprint(Packet.from_json({
+        ...     'key': 'value',
+        ...     'x': 'y',
+        ...     'bool': True
+        ... }).json)
+        {'bool': True, 'key': 'value', 'x': 'y'}
+        """
+        return cls(**json)
