@@ -31,8 +31,9 @@ class Cube(Command):
         for component in raw.split(maximum=1)[1]:
             if component.type == "text":
                 if component.text.split():
-                    result += self.join(
-                        map(self.cube, component.text.split()), ' · ')
+                    result += ' · '.join(
+                        map(self.cube, component.text.split())
+                    )
                     result.append(' · ')
             else:
                 result.append(component)
@@ -48,14 +49,6 @@ class Cube(Command):
         if match is not None:
             return '{:.4g}'.format(float(match.string)**3)
         return '{}³'.format(value)
-
-    @staticmethod
-    def join(iterable, delimeter):
-        iterable = iter(iterable)
-        yield next(iterable)
-        for item in iterable:
-            yield delimeter
-            yield item
 
 
 class Temmie(Command):

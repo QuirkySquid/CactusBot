@@ -3,7 +3,6 @@
 from aiohttp import get
 
 from . import Command
-from ...packets import MessagePacket
 
 
 class Quote(Command):
@@ -53,19 +52,13 @@ class Quote(Command):
     @Command.command(hidden=True, role="subscriber")
     async def inspirational(self):
         """Retrieve an inspirational quote."""
-        try:
-            data = await (await get(
-                "http://api.forismatic.com/api/1.0/",
-                params=dict(method="getQuote", lang="en", format="json")
-            )).json()
-        except Exception:
-            return MessagePacket(
-                "Unable to get an inspirational quote. Have a ",
-                ("emoji", "🐹"),
-                " instead."
-            )
-        else:
-            return "\"{quote}\" -{author}".format(
-                quote=data["quoteText"].strip(),
-                author=data["quoteAuthor"].strip() or "Unknown"
-            )
+
+        data = await (await get(
+            "http://api.forismatic.com/api/1.0/",
+            params=dict(method="getQuote", lang="en", format="json")
+        )).json()
+
+        return "\"{quote}\" -{author}".format(
+            quote=data["quoteText"].strip(),
+            author=data["quoteAuthor"].strip() or "Unknown"
+        )

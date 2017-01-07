@@ -9,6 +9,7 @@ BASE_URL = "https://beam.pro/api/v1/channels/{username}"
 
 
 async def check_user(username):
+    """Check the existence of a user."""
     if username.startswith('@'):
         username = username[1:]
     async with aiohttp.get(BASE_URL.format(username=username)) as response:
@@ -21,9 +22,6 @@ class Trust(Command):
     """Trust command."""
 
     COMMAND = "trust"
-
-    async def get_user_id(self, username):
-        return await aiohttp.get(self.BASE + username)
 
     @Command.command(hidden=True)
     async def default(self, username: check_user):

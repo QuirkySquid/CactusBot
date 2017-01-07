@@ -4,7 +4,7 @@ from .command import Command
 
 
 class Config(Command):
-    """Config command"""
+    """Config command."""
 
     COMMAND = "config"
 
@@ -23,27 +23,26 @@ class Config(Command):
                     await (
                         await self.api.get_config("announce:" + kind)
                     ).json()
-                )["data"]["announce"][kind]["announce"]
+                )["data"]["attributes"]["announce"][kind]["announce"]
 
-                await self.update_config(
-                    "announce", kind, "announce", not current_value
-                )
+                await self.api.update_config(
+                    {"announce": {kind: {"announce": not current_value}}})
 
                 return "{kind} announcements are now {pre}abled.".format(
                     kind=kind.title(), pre=('dis', 'en')[not current_value])
 
             if args[1].lower() in ("on", "enable", "true"):
 
-                await self.update_config(
-                    "announce", kind, "announce", True)
+                await self.api.update_config(
+                    {"announce": {kind: {"announce": True}}})
 
                 return "{kind} announcements are now enabled.".format(
                     kind=kind.title())
 
             elif args[1].lower() in ("off", "disable", "false"):
 
-                await self.update_config(
-                    "announce", kind, "announce", False)
+                await self.api.update_config(
+                    {"announce": {kind: {"announce": False}}})
 
                 return "{kind} announcements are now disabled.".format(
                     kind=kind.title())
@@ -51,26 +50,26 @@ class Config(Command):
             else:
                 return "Invalid toggle state: '{state}'.".format(state=args[1])
 
-        response = await self.update_config(
-            "announce", kind, "message", ' '.join(args))
+        response = await self.api.update_config(
+            {"announce": {kind: {"message": ' '.join(args)}}})
 
         if response.status == 200:
             return "Updated announcment."
 
     @Command.command()
     class Spam(Command):
+        """Spam configuration command."""
 
         @Command.command(role="moderator")
         async def urls(self, value):
+            """Update URLs spam config."""
 
             if value in ("on", "allow", "enable", "true"):
-                await self.update_config(
-                    self, "announce", "allowUrls", "announce", True)
+                await self.api.update_config({"spam": {"allowUrls": True}})
                 return "URLs are now allowed."
 
             elif value in ("off", "disallow", "disable", "false"):
-                await self.update_config(
-                    self, "announce", "allowUrls", "announce", False)
+                await self.api.update_config({"spam": {"allowUrls": False}})
                 return "URLs are now disallowed."
 
             else:
@@ -78,29 +77,19 @@ class Config(Command):
 
         @Command.command()
         async def emoji(self, value: r"\d+"):
+            """Update emoji spam config."""
 
-            await self.update_config(
-                self, "announce", "maxEmoji", "announce", int(value))
+            await self.api.update_config({"spam": {"maxEmoji": int(value)}})
 
             return "Maximum number of emoji is now {value}.".format(
                 value=value)
 
         @Command.command()
         async def caps(self, value: r"\d+"):
+            """Update capitals score spam config."""
 
-            await self.update_config(
-                "announce", "maxCapsScore", "announce", int(value))
+            await self.api.update_config(
+                {"spam": {"maxCapsScore": int(value)}})
 
             return "Maximum capitals score is now {value}.".format(
                 value=value)
-
-    async def update_config(self, scope, kind, field, value):
-        return await self.api.update_config({
-            scope: {
-                kind: {
-                    field: value
-                }
-            }
-        })
-
-    Spam.update_config = update_config

@@ -40,41 +40,46 @@ class Cactus(Command):
     async def github(self, project=None):
         """Github response."""
 
+        response = None
+
         if project is None or project.lower() in ("bot", "cactusbot"):
-            return MessagePacket(
+            response = MessagePacket(
                 "Check out my GitHub repository at: ",
                 ("url", "https://github.com/CactusDev/CactusBot",
                  "github.com/CactusDev/CactusBot")
             )
         elif project.lower() == "issue":
-            return MessagePacket(
+            response = MessagePacket(
                 "Create a GitHub issue at: ",
                 ("url", "https://github.com/CactusDev/CactusBot/issues",
                  "github.com/CactusDev/CactusBot/issues")
             )
         elif project.lower() in ("cactusdev", "cactus"):
-            return MessagePacket(
+            response = MessagePacket(
                 "Check out the CactusDev GitHub organization at: ",
                 ("url", "https://github.com/CactusDev", "github.com/CactusDev")
             )
         elif project.lower() in ("api", "cactusapi"):
-            return MessagePacket(
+            response = MessagePacket(
                 "Check out the GitHub repository for CactusAPI at: ",
                 ("url", "https://github.com/CactusDev/CactusAPI",
                  "github.com/CactusDev/CactusAPI")
             )
         elif project.lower() == "sepal":
-            return MessagePacket(
+            response = MessagePacket(
                 "Check out the GitHub repository for Sepal at: ",
                 ("url", "https://github.com/CactusDev/Sepal",
                  "github.com/CactusDev/Sepal")
             )
         elif project.lower() in ("assets", "art"):
-            return MessagePacket(
+            response = MessagePacket(
                 "Check out the CactusDev assets at: ",
                 ("url", "https://github.com/CactusDev/CactusAssets",
                  "github.com/CactusDev/CactusAssets")
             )
+
+        if response is not None:
+            return response
         return MessagePacket("Unknown project '{0}'.".format(project))
 
     @Command.command()
